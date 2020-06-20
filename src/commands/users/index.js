@@ -1,16 +1,11 @@
-const {Command, flags} = require('@oclif/command')
-const {cli} = require('cli-ux')
+const { Command } = require('@oclif/command')
 
 class UsersCommand extends Command {
-  async run() {
+  async run () {
   }
 }
 
-UsersCommand.description = `Describe the command here
-...
-Extra documentation goes here
-`
-
+UsersCommand.description = 'Manage users'
 UsersCommand.flags = {}
 
 module.exports = UsersCommand

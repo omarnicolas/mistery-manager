@@ -8,7 +8,9 @@
   },
   "bugs": "https://github.com/omarnicolas/mistery-manager/issues",
   "dependencies": {
+    "@mistery/crypto": "file:packages/mistery-crypto",
     "@mistery/db": "file:packages/mistery-db",
+    "@mistery/services": "file:packages/mistery-services",
     "@oclif/command": "^1.6.1",
     "@oclif/config": "^1.15.1",
     "@oclif/plugin-help": "^3.1.0",
