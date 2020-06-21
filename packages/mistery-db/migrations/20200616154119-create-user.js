@@ -15,11 +15,11 @@ module.exports = {
       },
       password: {
         allowNull: false,
-        type: Sequelize.STRING,
+        type: Sequelize.STRING
       },
       full_name: {
         allowNull: true,
-        type: Sequelize.STRING,
+        type: Sequelize.STRING
       },
       random_key: {
         allowNull: false,

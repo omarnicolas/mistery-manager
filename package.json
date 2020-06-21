@@ -8,20 +8,23 @@
   },
   "bugs": "https://github.com/omarnicolas/mistery-manager/issues",
   "dependencies": {
+    "@mistery/auth": "file:packages/mistery-auth",
     "@mistery/crypto": "file:packages/mistery-crypto",
     "@mistery/db": "file:packages/mistery-db",
     "@mistery/services": "file:packages/mistery-services",
     "@oclif/command": "^1.6.1",
     "@oclif/config": "^1.15.1",
     "@oclif/plugin-help": "^3.1.0",
-    "cli-ux": "^5.4.6"
+    "cli-ux": "^5.4.6",
+    "clipboardy": "^2.3.0"
   },
   "devDependencies": {
     "@oclif/dev-cli": "^1.22.2",
     "eslint": "^5.16.0",
     "eslint-config-oclif": "^3.1.0",
     "globby": "^10.0.2",
-    "lerna": "^3.22.1"
+    "lerna": "^3.22.1",
+    "standard": "^14.3.4"
   },
   "engines": {
     "node": ">=8.0.0"
@@ -40,6 +43,9 @@
   "main": "src/index.js",
   "oclif": {
     "commands": "./src/commands",
+    "hooks": {
+      "authenticate": "./src/hooks/auth/index.js"
+    },
     "bin": "mistery-manager",
     "plugins": [
       "@oclif/plugin-help"
@@ -47,8 +53,9 @@
   },
   "repository": "omarnicolas/mistery-manager",
   "scripts": {
+    "lint": "npm run posttest",
     "postpack": "rm -f oclif.manifest.json",
-    "posttest": "eslint .",
+    "posttest": "standard --fix",
     "prepack": "oclif-dev manifest && oclif-dev readme",
     "test": "echo NO TESTS",
     "version": "oclif-dev readme && git add README.md"

@@ -3,20 +3,18 @@
 const { Command } = require('@oclif/command')
 const { CLIError } = require('@oclif/errors')
 const { cli } = require('cli-ux')
-const { userServices, secretServices } = require('@mistery/services')
+const { secretServices } = require('@mistery/services')
 
 class SecretsUpdateCommand extends Command {
   async run () {
     try {
       const { args } = this.parse(SecretsUpdateCommand)
       const { username, name } = args
-      const password = await cli.prompt('Enter your password', { type: 'hide' })
 
-      const user = await userServices.authenticate(username, password)
-      if (!user) throw new CLIError('Invalid user or password')
+      await this.config.runHook('authenticate', { username })
 
       const value = await cli.prompt('Enter your new secret', { type: 'mask' })
-      await secretServices.updateSecret(user, password, name, value)
+      await secretServices.updateSecret(username, name, value)
       this.log(`secret ${name} updated`)
     } catch (err) {
       if (err instanceof CLIError) {
@@ -24,11 +22,13 @@ class SecretsUpdateCommand extends Command {
       } else {
         throw new CLIError('Cannot delete secret')
       }
+    } finally {
+      this.exit(0)
     }
   }
 }
 
-SecretsUpdateCommand.description = 'Delete a secret by username and name'
+SecretsUpdateCommand.description = 'Update a secret by username and name'
 SecretsUpdateCommand.flags = {}
 SecretsUpdateCommand.args = [
   { name: 'username', required: true },

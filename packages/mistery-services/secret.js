@@ -1,16 +1,21 @@
 'use strict'
 
 const db = require('@mistery/db')
-const { generateKey, encrypt, decrypt } = require('@mistery/crypto')
+const { getSecretKey } = require('@mistery/auth')
+const { encrypt, decrypt } = require('@mistery/crypto')
 
 module.exports = {
-  createSecret (user, pass, name, value) {
-    const secretKey = generateKey(pass)
+  async createSecret (username, name, value) {
+    const user = await db.User.findOne({ where: { username } })
+
+    if (!user) throw new Error('User not found')
+
+    const secretKey = await getSecretKey(username)
     const randomKey = user.randomKey
     const encrypted = encrypt(value, secretKey, randomKey)
 
     return db.Secret.create({
-      username: user.username,
+      username,
       name,
       value: encrypted
     })
@@ -20,12 +25,16 @@ module.exports = {
     return db.Secret.findAndCountAll({ where: { username } })
   },
 
-  async getSecret (user, pass, name) {
-    const secretKey = generateKey(pass)
+  async getSecret (username, name) {
+    const user = await db.User.findOne({ where: { username } })
+
+    if (!user) throw new Error('User not found')
+
+    const secretKey = await getSecretKey(username)
     const randomKey = user.randomKey
     const secret = await db.Secret.findOne({
       where: {
-        username: user.username,
+        username,
         name
       }
     })
@@ -42,20 +51,24 @@ module.exports = {
     }
   },
 
-  updateSecret (user, pass, name, value) {
-    const secretKey = generateKey(pass)
+  async updateSecret (username, name, value) {
+    const user = await db.User.findOne({ where: { username } })
+
+    if (!user) throw new Error('User not found')
+
+    const secretKey = await getSecretKey(username)
     const randomKey = user.randomKey
     const encrypted = encrypt(value, secretKey, randomKey)
 
     return db.Secret.update({
       value: encrypted
-    }, { where: { username: user.username, name } })
+    }, { where: { username, name } })
   },
 
-  deleteSecret (user, name) {
+  deleteSecret (username, name) {
     return db.Secret.destroy({
       where: {
-        username: user.username,
+        username,
         name
       }
     })
